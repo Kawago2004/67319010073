@@ -1,0 +1,27 @@
+style.css body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url(https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2tvamc0ODc2eTNudjVudDFsYjUxZGdzY3g4OHJiZTdyNmdxam5rZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cODrlNTkGnZGVtVagd/giphy.gif);
+  text-align: center;
+  padding-top: 100px;
+  margin: 0;
+}
+
+h1 {
+  color: #000c18;
+  font-size: 3em;
+}
+
+p {
+  color: #1620ac;
+  font-size: 1.5em;
+}
+
+.welcome-box {
+  background-image: url(https://media1.tenor.com/m/jvM7s2tiUWsAAAAC/rat-spin.gif
+);
+  padding: 40px;
+  margin: 0 auto;
+  width: 60%;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(19, 127, 250, 0.1);
+}
