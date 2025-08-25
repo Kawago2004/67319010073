@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก - Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #7db301 0%, #2319ac 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .form-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .form-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: #adb5bd;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            margin-top: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .form-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .form-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Success animation */
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-animation {
+            animation: success 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title"> สมัครสมาชิก</h1>
+        <p class="form-subtitle">เข้าร่วมกับเราวันนี้และรับสิทธิพิเศษมากมาย</p>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="name" class="form-label">ชื่อ-นามสกุล</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    class="form-input" 
+                    placeholder="กรุณากรอกชื่อ-นามสกุล"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">อีเมล</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="example@email.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">รหัสผ่าน</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="กรุณากรอกรหัสผ่าน"
+                    required
+                    minlength="6"
+                >
+            </div>
+
+            <button type="submit" class="submit-btn">
+                สมัครสมาชิก
+            </button>
+        </form>
+
+        <div class="form-footer">
+            มีบัญชีอยู่แล้ว? <a href="#" onclick="showLoginMessage()">เข้าสู่ระบบ</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (name && email && password) {
+                // Add success animation
+                const container = document.querySelector('.form-container');
+                container.classList.add('success-animation');
+                
+                // Change button text temporarily
+                const btn = document.querySelector('.submit-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ สมัครสมาชิกสำเร็จ!';
+                btn.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+                
+                setTimeout(() => {
+                    alert(`🎉 สวัสดี ${name}!\n\nการสมัครสมาชิกสำเร็จแล้ว\nอีเมล: ${email}\n\nขอบคุณที่เข้าร่วมกับเรา!`);
+                    
+                    // Reset form
+                    this.reset();
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    container.classList.remove('success-animation');
+                }, 1000);
+            }
+        });
+
+        function showLoginMessage() {
+            alert('🔐 หน้าเข้าสู่ระบบ\n\nฟีเจอร์นี้จะพร้อมใช้งานเร็วๆ นี้!');
+        }
+
+        // Add input validation feedback
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#e74c3c';
+                } else {
+                    this.style.borderColor = '#27ae60';
+                }
+            });
+            
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#667eea';
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97489378c0a34f5d',t:'MTc1NjA5ODU1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
