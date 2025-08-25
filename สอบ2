@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เมนูอาหาร - Food Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .menu-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .food-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+        }
+
+        .food-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .food-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .food-image:hover {
+            transform: scale(1.1);
+        }
+
+        .food-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #4a4a4a, #6a4c93);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0.1) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255,255,255,0.1) 50%, 
+                rgba(255,255,255,0.1) 75%, 
+                transparent 75%);
+            background-size: 20px 20px;
+        }
+
+        .food-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .food-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .food-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .price {
+            color: #6a4c93;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .food-item {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ เมนูอาหารพิเศษ</h1>
+        
+        <div class="menu-grid">
+            <div class="food-item">
+                <div class="food-image">
+                    <div class="food-placeholder">
+                        <div>
+                            <div class="icon"></div>
+                            <div><h1><img src="data:image/jpeg;base64,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" alt=""></h1></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="food-name">สปาเก็ตตี้คาร์โบนาร่า</div>
+                <div class="food-description">เส้นสปาเก็ตตี้เนื้อนุ่ม ราดด้วยซอสครีมเข้มข้น เบคอนหอมกรอบ และชีสพาร์เมซาน</div>
+                <div class="price">฿280</div>
+            </div>
+
+            <div class="food-item">
+                <div class="food-image">
+                    <div class="food-placeholder">
+                        <div>
+                            <div class="icon"></div>
+                            <div><h1><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeCNqUtdYFkkhbPI9-96AVRbMIRkYG-xWubQ&s" alt=""></h1></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="food-name">พิซซ่ามาร์เกอริต้า</div>
+                <div class="food-description">แป้งพิซซ่าบางกรอบ ราดซอสมะเขือเทศสด โมซาเรลล่าชีส และใบโหระพาสด</div>
+                <div class="price">฿320</div>
+            </div>
+
+            <div class="food-item">
+                <div class="food-image">
+                    <div class="food-placeholder">
+                        <div>
+                            <div class="icon"></div>
+                            <div><h1><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUiUYqXywgApHLLcGLdEGgyuj3c9DVBE7azg&s" alt=""></h1></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="food-name">สลัดซีซาร์</div>
+                <div class="food-description">ผักสลัดสดใหม่ ราดด้วยซอสซีซาร์เข้มข้น โรยหน้าด้วยครูตองกรอบ และชีสพาร์เมซาน</div>
+                <div class="price">฿220</div>
+            </div>
+        </div>
+    </div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9748a80ec6604f5d',t:'MTc1NjA5OTM5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
