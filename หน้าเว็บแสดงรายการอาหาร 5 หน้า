@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เมนูอาหาร - Food Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Menu */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+        }
+
+        /* CSS Flexbox Layout */
+        .menu-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            max-width: 220px;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .food-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        /* Hover effect - image scales up */
+        .food-image:hover img {
+            transform: scale(1.15);
+        }
+
+        .food-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .food-price {
+            font-size: 1.1rem;
+            color: #e74c3c;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+
+        .footer-section p, .footer-section li {
+            color: #bdc3c7;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li:hover {
+            color: #3498db;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 20px;
+            text-align: center;
+            color: #95a5a6;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 15px;
+            }
+            
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .menu-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .menu-item {
+                max-width: 300px;
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Menu with Icons -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">🍽️ ร้านขยะ</div>
+            <ul class="nav-menu">
+                <li>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        หน้าแรก
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        เมนู
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                        </svg>
+                        เกี่ยวกับเรา
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item">
+                        <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                        </svg>
+                        ติดต่อ
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ เมนูอาหารพิเศษ</h1>
+            <p>อาหารอร่อยที่คัดสรรมาเป็นพิเศษ</p>
+        </div>
+
+        <!-- Food Menu using CSS Flexbox -->
+        <div class="menu-grid">
+            <div class="menu-item">
+                <div class="food-image">
+                    <img src="data:image/jpeg;base64,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" alt="ผัดไทย" onerror="this.src=''; this.alt='รูปภาพไม่สามารถโหลดได้'; this.style.display='none';">
+                </div>
+                <div class="food-name">ผัดไทย</div>
+                <div class="food-price">120 บาท</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="food-image">
+                    <img src="https://www.unileverfoodsolutions.co.th/dam/global-ufs/mcos/grit/italy/calcmenu/recipes/IT-recipes/%E0%B8%95%E0%B9%89%E0%B8%A1%E0%B8%A2%E0%B8%B3%E0%B8%81%E0%B8%B8%E0%B9%89%E0%B8%87/LINE-ALBUM-Images%20for%20website-250424-header.jpg" alt="ต้มยำกุ้ง" onerror="this.src=''; this.alt='รูปภาพไม่สามารถโหลดได้'; this.style.display='none';">
+                </div>
+                <div class="food-name">ต้มยำกุ้ง</div>
+                <div class="food-price">180 บาท</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="food-image">
+                    <img src="https://api2.krua.co/wp-content/uploads/2025/03/SEOImage_1200x630-%E0%B9%81%E0%B8%81%E0%B8%87%E0%B9%80%E0%B8%82%E0%B8%B5%E0%B8%A2%E0%B8%A7%E0%B8%AB%E0%B8%A7%E0%B8%B2%E0%B8%99.jpg" alt="แกงเขียวหวาน" onerror="this.src=''; this.alt='รูปภาพไม่สามารถโหลดได้'; this.style.display='none';">
+                </div>
+                <div class="food-name">แกงเขียวหวาน</div>
+                <div class="food-price">150 บาท</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="food-image">
+                    <img src="https://static.thairath.co.th/media/dFQROr7oWzulq5Fa5BgnmwjtvXKFcXLLYhDRT99eZSKMrXSp3ZeA6oM0aHrIV0RZaSc.jpg" alt="ข้าวเหนียวมะม่วง" onerror="this.src=''; this.alt='รูปภาพไม่สามารถโหลดได้'; this.style.display='none';">
+                </div>
+                <div class="food-name">ข้าวเหนียวมะม่วง</div>
+                <div class="food-price">80 บาท</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="food-image">
+                    <img src="https://www.matichonacademy.com/wp-content/uploads/2020/11/papaya-salad-served-with-rice-noodles-vegetable-salad-decorated-with-thai-food-ingredients.jpg" alt="ส้มตำ" onerror="this.src=''; this.alt='รูปภาพไม่สามารถโหลดได้'; this.style.display='none';">
+                </div>
+                <div class="food-name">ส้มตำ</div>
+                <div class="food-price">60 บาท</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🍽️ Thai Delicious</h3>
+                    <p>ร้านอาหารไทยแท้ที่นำเสนออาหารรสชาติดั้งเดิม ด้วยวัตถุดิบคุณภาพสูง และการปรุงแต่งที่ใส่ใจในทุกรายละเอียด</p>
+                    <div class="social-icons">
+                        <div class="social-icon">
+                            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>📍 ข้อมูลติดต่อ</h3>
+                    <ul>
+                        <li>
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                            </svg>
+                            123 ถนนสุขุมวิท กรุงเทพฯ 10110
+                        </li>
+                        <li>
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                            </svg>
+                            092-326-7764
+                        </li>
+                        <li>
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                            </svg>
+                           https://www.facebook.com/TickHONSA?locale=th_TH
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>⏰ เวลาเปิด-ปิด</h3>
+                    <ul>
+                        <li>จันทร์ - ศุกร์: 11:00 - 22:00</li>
+                        <li>เสาร์ - อาทิตย์: 10:00 - 23:00</li>
+                        <li>วันหยุดนักขัตฤกษ์: 10:00 - 22:00</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>🔗 ลิงก์ด่วน</h3>
+                    <ul>
+                        <li>📋 เมนูอาหาร</li>
+                        <li>🚚 สั่งอาหารออนไลน์</li>
+                        <li>🎉 โปรโมชั่น</li>
+                        <li>📝 รีวิวลูกค้า</li>
+                        <li>💼 ร่วมงานกับเรา</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Thai Delicious Restaurant. สงวนลิขสิทธิ์ทุกประการ | ออกแบบด้วย ❤️</p>
+            </div>
+        </div>
+    </footer>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'974a6fb63680fd39',t:'MTc1NjExODA2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
