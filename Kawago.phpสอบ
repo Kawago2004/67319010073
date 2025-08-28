@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการหลังบ้าน - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-backdrop { backdrop-filter: blur(4px); }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <i class="fas fa-shield-alt text-4xl text-blue-600 mb-4"></i>
+                <h1 class="text-2xl font-bold text-gray-800">ระบบจัดการหลังบ้าน</h1>
+                <p class="text-gray-600">เข้าสู่ระบบเพื่อจัดการข้อมูล</p>
+            </div>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="กรอกชื่อผู้ใช้" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รหัสผ่าน</label>
+                    <input type="password" id="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="กรอกรหัสผ่าน" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
+                    <i class="fas fa-sign-in-alt mr-2"></i>เข้าสู่ระบบ
+                </button>
+            </form>
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
+                <strong>ข้อมูลทดสอบ:</strong><br>
+                ชื่อผู้ใช้: admin<br>
+                รหัสผ่าน: password
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen flex">
+        <!-- Sidebar -->
+        <div id="sidebar" class="bg-gray-900 text-white w-64 min-h-screen sidebar-transition">
+            <div class="p-6 border-b border-gray-700">
+                <h2 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-cogs mr-3"></i>
+                    ระบบจัดการ
+                </h2>
+            </div>
+            <nav class="mt-6">
+                <a href="#" onclick="showSection('dashboardSection')" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                    <i class="fas fa-chart-dashboard mr-3"></i>แดชบอร์ด
+                </a>
+                <a href="#" onclick="showSection('productsSection')" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                    <i class="fas fa-box mr-3"></i>จัดการสินค้า
+                </a>
+                <a href="#" onclick="showSection('usersSection')" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                    <i class="fas fa-users mr-3"></i>จัดการผู้ใช้
+                </a>
+                <a href="#" onclick="showSection('categoriesSection')" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                    <i class="fas fa-tags mr-3"></i>หมวดหมู่
+                </a>
+                <a href="#" onclick="logout()" class="flex items-center px-6 py-3 text-gray-300 hover:bg-red-600 hover:text-white transition duration-200 mt-8">
+                    <i class="fas fa-sign-out-alt mr-3"></i>ออกจากระบบ
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 id="pageTitle" class="text-2xl font-semibold text-gray-800">แดชบอร์ด</h1>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">ยินดีต้อนรับ, Kawago</span>
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 p-6 overflow-auto">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="section fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">สินค้าทั้งหมด</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalProducts">0</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i class="fas fa-box text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">ผู้ใช้ทั้งหมด</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalUsers">0</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i class="fas fa-users text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">หมวดหมู่</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalCategories">0</p>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i class="fas fa-tags text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">ยอดขายวันนี้</p>
+                                    <p class="text-2xl font-bold text-gray-900">฿12,450</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <i class="fas fa-chart-line text-yellow-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4">กิจกรรมล่าสุด</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-600">เพิ่มสินค้าใหม่: iPhone 15 Pro</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-600">อัพเดทข้อมูลผู้ใช้: john@example.com</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                    <span class="text-sm text-gray-600">สร้างหมวดหมู่ใหม่: อุปกรณ์เสริม</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4">สถิติระบบ</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">การใช้งานระบบ</span>
+                                    <span class="text-sm font-medium">85%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">พื้นที่จัดเก็บ</span>
+                                    <span class="text-sm font-medium">62%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 62%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div id="productsSection" class="section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold">จัดการสินค้า</h2>
+                        <div class="flex space-x-2">
+                            <button id="bulkDeleteBtn" onclick="bulkDeleteProducts()" class="hidden bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200">
+                                <i class="fas fa-trash mr-2"></i>ลบที่เลือก (<span id="selectedCount">0</span>)
+                            </button>
+                            <button onclick="openProductModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                                <i class="fas fa-plus mr-2"></i>เพิ่มสินค้า
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="p-4 border-b border-gray-200">
+                            <input type="text" id="productSearch" placeholder="ค้นหาสินค้า..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <input type="checkbox" id="selectAllProducts" onchange="toggleAllProducts()" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สินค้า</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">หมวดหมู่</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ราคา</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สต็อก</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สถานะ</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTable" class="bg-white divide-y divide-gray-200">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" class="section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold">จัดการผู้ใช้</h2>
+                        <button onclick="openUserModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                            <i class="fas fa-user-plus mr-2"></i>เพิ่มผู้ใช้
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="p-4 border-b border-gray-200">
+                            <input type="text" id="userSearch" placeholder="ค้นหาผู้ใช้..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ผู้ใช้</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">อีเมล</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">บทบาท</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">วันที่สมัคร</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สถานะ</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTable" class="bg-white divide-y divide-gray-200">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Section -->
+                <div id="categoriesSection" class="section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold">จัดการหมวดหมู่</h2>
+                        <button onclick="openCategoryModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200">
+                            <i class="fas fa-plus mr-2"></i>เพิ่มหมวดหมู่
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="categoriesGrid">
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold" id="productModalTitle">เพิ่มสินค้าใหม่</h3>
+            </div>
+            <form id="productForm" class="p-6 space-y-4">
+                <input type="hidden" id="productId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อสินค้า</label>
+                    <input type="text" id="productName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">หมวดหมู่</label>
+                    <select id="productCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ราคา (บาท)</label>
+                    <input type="number" id="productPrice" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">จำนวนสต็อก</label>
+                    <input type="number" id="productStock" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">คำอธิบาย</label>
+                    <textarea id="productDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">บันทึก</button>
+                    <button type="button" onclick="closeProductModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition duration-200">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold" id="userModalTitle">เพิ่มผู้ใช้ใหม่</h3>
+            </div>
+            <form id="userForm" class="p-6 space-y-4">
+                <input type="hidden" id="userId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้ใช้</label>
+                    <input type="text" id="userName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">อีเมล</label>
+                    <input type="email" id="userEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">บทบาท</label>
+                    <select id="userRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="user">ผู้ใช้ทั่วไป</option>
+                        <option value="admin">ผู้ดูแลระบบ</option>
+                        <option value="moderator">ผู้ควบคุม</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รหัสผ่าน</label>
+                    <input type="password" id="userPassword" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">เว้นว่างไว้หากไม่ต้องการเปลี่ยนรหัสผ่าน</p>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-200">บันทึก</button>
+                    <button type="button" onclick="closeUserModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition duration-200">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold" id="categoryModalTitle">เพิ่มหมวดหมู่ใหม่</h3>
+            </div>
+            <form id="categoryForm" class="p-6 space-y-4">
+                <input type="hidden" id="categoryId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อหมวดหมู่</label>
+                    <input type="text" id="categoryName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">คำอธิบาย</label>
+                    <textarea id="categoryDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ไอคอน</label>
+                    <select id="categoryIcon" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="fas fa-box">📦 กล่อง</option>
+                        <option value="fas fa-mobile-alt">📱 มือถือ</option>
+                        <option value="fas fa-laptop">💻 คอมพิวเตอร์</option>
+                        <option value="fas fa-tshirt">👕 เสื้อผ้า</option>
+                        <option value="fas fa-book">📚 หนังสือ</option>
+                        <option value="fas fa-gamepad">🎮 เกม</option>
+                        <option value="fas fa-car">🚗 รถยนต์</option>
+                        <option value="fas fa-home">🏠 บ้าน</option>
+                    </select>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition duration-200">บันทึก</button>
+                    <button type="button" onclick="closeCategoryModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition duration-200">ยกเลิก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="hidden fixed top-4 right-4 z-50 max-w-sm w-full">
+        <div id="notificationContent" class="p-4 rounded-lg shadow-lg border-l-4">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i id="notificationIcon" class="text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <p id="notificationMessage" class="text-sm font-medium"></p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button onclick="hideNotification()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated Database
+        let database = {
+            products: [
+                { id: 1, name: 'iPhone 15 Pro', category: 1, price: 45900, stock: 25, description: 'สมาร์ทโฟนรุ่นล่าสุด', status: 'active' },
+                { id: 2, name: 'MacBook Air M2', category: 2, price: 42900, stock: 15, description: 'แล็ปท็อปสำหรับงานทั่วไป', status: 'active' },
+                { id: 3, name: 'AirPods Pro', category: 3, price: 8900, stock: 50, description: 'หูฟังไร้สาย', status: 'active' }
+            ],
+            users: [
+                { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', joinDate: '2024-01-15', status: 'active' },
+                { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user', joinDate: '2024-02-20', status: 'active' },
+                { id: 3, name: 'Bob Wilson', email: 'bob@example.com', role: 'moderator', joinDate: '2024-03-10', status: 'inactive' }
+            ],
+            categories: [
+                { id: 1, name: 'สมาร์ทโฟน', description: 'โทรศัพท์มือถือ', icon: 'fas fa-mobile-alt' },
+                { id: 2, name: 'คอมพิวเตอร์', description: 'แล็ปท็อปและเดสก์ท็อป', icon: 'fas fa-laptop' },
+                { id: 3, name: 'อุปกรณ์เสริม', description: 'อุปกรณ์เสริมต่างๆ', icon: 'fas fa-headphones' }
+            ]
+        };
+
+        let nextId = { products: 4, users: 4, categories: 4 };
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const content = document.getElementById('notificationContent');
+            const icon = document.getElementById('notificationIcon');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            
+            // Reset classes
+            content.className = 'p-4 rounded-lg shadow-lg border-l-4';
+            
+            if (type === 'success') {
+                content.classList.add('bg-green-50', 'border-green-400');
+                messageEl.classList.add('text-green-800');
+                icon.className = 'fas fa-check-circle text-green-400 text-xl';
+            } else if (type === 'error') {
+                content.classList.add('bg-red-50', 'border-red-400');
+                messageEl.classList.add('text-red-800');
+                icon.className = 'fas fa-exclamation-circle text-red-400 text-xl';
+            } else if (type === 'warning') {
+                content.classList.add('bg-yellow-50', 'border-yellow-400');
+                messageEl.classList.add('text-yellow-800');
+                icon.className = 'fas fa-exclamation-triangle text-yellow-400 text-xl';
+            }
+            
+            notification.classList.remove('hidden');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                hideNotification();
+            }, 3000);
+        }
+        
+        function hideNotification() {
+            document.getElementById('notification').classList.add('hidden');
+        }
+
+        // Authentication
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'password') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                initializeDashboard();
+            } else {
+                alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+            }
+        });
+
+        function logout() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById(sectionId).classList.add('fade-in');
+            
+            // Update page title
+            const titles = {
+                'dashboardSection': 'แดชบอร์ด',
+                'productsSection': 'จัดการสินค้า',
+                'usersSection': 'จัดการผู้ใช้',
+                'categoriesSection': 'จัดการหมวดหมู่'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId];
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-gray-700', 'text-white');
+                item.classList.add('text-gray-300');
+            });
+            event.target.classList.add('bg-gray-700', 'text-white');
+            event.target.classList.remove('text-gray-300');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            updateDashboardStats();
+            loadProducts();
+            loadUsers();
+            loadCategories();
+            setupSearchFilters();
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('totalProducts').textContent = database.products.length;
+            document.getElementById('totalUsers').textContent = database.users.length;
+            document.getElementById('totalCategories').textContent = database.categories.length;
+        }
+
+        // Products Management
+        function loadProducts() {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
+            
+            database.products.forEach(product => {
+                const category = database.categories.find(c => c.id === product.category);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" class="product-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" value="${product.id}" onchange="updateBulkDeleteButton()">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                        <div class="text-sm text-gray-500">${product.description}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${category ? category.name : 'ไม่ระบุ'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">฿${product.price.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.stock}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${product.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button onclick="editProduct(${product.id})" class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            updateProductCategoryOptions();
+            updateBulkDeleteButton();
+        }
+
+        function toggleAllProducts() {
+            const selectAll = document.getElementById('selectAllProducts');
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateBulkDeleteButton();
+        }
+
+        function updateBulkDeleteButton() {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            if (checkboxes.length > 0) {
+                bulkDeleteBtn.classList.remove('hidden');
+                selectedCount.textContent = checkboxes.length;
+            } else {
+                bulkDeleteBtn.classList.add('hidden');
+            }
+            
+            // Update select all checkbox state
+            const allCheckboxes = document.querySelectorAll('.product-checkbox');
+            const selectAll = document.getElementById('selectAllProducts');
+            selectAll.checked = allCheckboxes.length > 0 && checkboxes.length === allCheckboxes.length;
+        }
+
+        function bulkDeleteProducts() {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            
+            if (selectedIds.length === 0) return;
+            
+            const productNames = selectedIds.map(id => {
+                const product = database.products.find(p => p.id === id);
+                return product ? product.name : '';
+            }).filter(name => name);
+            
+            const confirmMessage = `คุณต้องการลบสินค้าที่เลือก ${selectedIds.length} รายการหรือไม่?\n\n${productNames.slice(0, 3).join(', ')}${productNames.length > 3 ? '...' : ''}\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้`;
+            
+            if (confirm(confirmMessage)) {
+                database.products = database.products.filter(p => !selectedIds.includes(p.id));
+                loadProducts();
+                updateDashboardStats();
+                showNotification(`ลบสินค้า ${selectedIds.length} รายการเรียบร้อยแล้ว`, 'success');
+            }
+        }
+
+        function updateProductCategoryOptions() {
+            const select = document.getElementById('productCategory');
+            select.innerHTML = '<option value="">เลือกหมวดหมู่</option>';
+            database.categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                select.appendChild(option);
+            });
+        }
+
+        function openProductModal(productId = null) {
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('productModalTitle');
+            const form = document.getElementById('productForm');
+            
+            if (productId) {
+                const product = database.products.find(p => p.id === productId);
+                title.textContent = 'แก้ไขสินค้า';
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productCategory').value = product.category;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productStock').value = product.stock;
+                document.getElementById('productDescription').value = product.description;
+            } else {
+                title.textContent = 'เพิ่มสินค้าใหม่';
+                form.reset();
+                document.getElementById('productId').value = '';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function editProduct(id) {
+            openProductModal(id);
+        }
+
+        function deleteProduct(id) {
+            const product = database.products.find(p => p.id === id);
+            if (confirm(`คุณต้องการลบสินค้า "${product.name}" หรือไม่?\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้`)) {
+                database.products = database.products.filter(p => p.id !== id);
+                loadProducts();
+                updateDashboardStats();
+                
+                // Show success message
+                showNotification('ลบสินค้าเรียบร้อยแล้ว', 'success');
+            }
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('productId').value;
+            const productData = {
+                name: document.getElementById('productName').value,
+                category: parseInt(document.getElementById('productCategory').value),
+                price: parseFloat(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                description: document.getElementById('productDescription').value,
+                status: 'active'
+            };
+            
+            if (id) {
+                // Update existing product
+                const index = database.products.findIndex(p => p.id === parseInt(id));
+                database.products[index] = { ...database.products[index], ...productData };
+            } else {
+                // Add new product
+                productData.id = nextId.products++;
+                database.products.push(productData);
+            }
+            
+            loadProducts();
+            updateDashboardStats();
+            closeProductModal();
+        });
+
+        // Users Management
+        function loadUsers() {
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = '';
+            
+            database.users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-gray-600 text-sm"></i>
+                            </div>
+                            <div class="text-sm font-medium text-gray-900">${user.name}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleColor(user.role)}">
+                            ${getRoleText(user.role)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${user.joinDate}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${user.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button onclick="editUser(${user.id})" class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteUser(${user.id})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getRoleColor(role) {
+            const colors = {
+                'admin': 'bg-red-100 text-red-800',
+                'moderator': 'bg-yellow-100 text-yellow-800',
+                'user': 'bg-blue-100 text-blue-800'
+            };
+            return colors[role] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getRoleText(role) {
+            const texts = {
+                'admin': 'ผู้ดูแลระบบ',
+                'moderator': 'ผู้ควบคุม',
+                'user': 'ผู้ใช้ทั่วไป'
+            };
+            return texts[role] || role;
+        }
+
+        function openUserModal(userId = null) {
+            const modal = document.getElementById('userModal');
+            const title = document.getElementById('userModalTitle');
+            const form = document.getElementById('userForm');
+            
+            if (userId) {
+                const user = database.users.find(u => u.id === userId);
+                title.textContent = 'แก้ไขผู้ใช้';
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userName').value = user.name;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userPassword').value = '';
+            } else {
+                title.textContent = 'เพิ่มผู้ใช้ใหม่';
+                form.reset();
+                document.getElementById('userId').value = '';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        function editUser(id) {
+            openUserModal(id);
+        }
+
+        function deleteUser(id) {
+            const user = database.users.find(u => u.id === id);
+            if (user.role === 'admin' && database.users.filter(u => u.role === 'admin').length === 1) {
+                showNotification('ไม่สามารถลบผู้ดูแลระบบคนสุดท้ายได้', 'error');
+                return;
+            }
+            
+            if (confirm(`คุณต้องการลบผู้ใช้ "${user.name}" หรือไม่?\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้`)) {
+                database.users = database.users.filter(u => u.id !== id);
+                loadUsers();
+                updateDashboardStats();
+                
+                // Show success message
+                showNotification('ลบผู้ใช้เรียบร้อยแล้ว', 'success');
+            }
+        }
+
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('userId').value;
+            const userData = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                role: document.getElementById('userRole').value,
+                status: 'active'
+            };
+            
+            if (id) {
+                // Update existing user
+                const index = database.users.findIndex(u => u.id === parseInt(id));
+                database.users[index] = { ...database.users[index], ...userData };
+            } else {
+                // Add new user
+                userData.id = nextId.users++;
+                userData.joinDate = new Date().toISOString().split('T')[0];
+                database.users.push(userData);
+            }
+            
+            loadUsers();
+            updateDashboardStats();
+            closeUserModal();
+        });
+
+        // Categories Management
+        function loadCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = '';
+            
+            database.categories.forEach(category => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-sm border border-gray-200';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="${category.icon} text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">${category.name}</h3>
+                                <p class="text-sm text-gray-500">${category.description}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editCategory(${category.id})" class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteCategory(${category.id})" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        สินค้า: ${database.products.filter(p => p.category === category.id).length} รายการ
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openCategoryModal(categoryId = null) {
+            const modal = document.getElementById('categoryModal');
+            const title = document.getElementById('categoryModalTitle');
+            const form = document.getElementById('categoryForm');
+            
+            if (categoryId) {
+                const category = database.categories.find(c => c.id === categoryId);
+                title.textContent = 'แก้ไขหมวดหมู่';
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name;
+                document.getElementById('categoryDescription').value = category.description;
+                document.getElementById('categoryIcon').value = category.icon;
+            } else {
+                title.textContent = 'เพิ่มหมวดหมู่ใหม่';
+                form.reset();
+                document.getElementById('categoryId').value = '';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        }
+
+        function editCategory(id) {
+            openCategoryModal(id);
+        }
+
+        function deleteCategory(id) {
+            const category = database.categories.find(c => c.id === id);
+            const productsInCategory = database.products.filter(p => p.category === id).length;
+            
+            if (productsInCategory > 0) {
+                showNotification(`ไม่สามารถลบหมวดหมู่ "${category.name}" ได้\nเนื่องจากมีสินค้า ${productsInCategory} รายการในหมวดหมู่นี้`, 'error');
+                return;
+            }
+            
+            if (confirm(`คุณต้องการลบหมวดหมู่ "${category.name}" หรือไม่?\n\nการดำเนินการนี้ไม่สามารถย้อนกลับได้`)) {
+                database.categories = database.categories.filter(c => c.id !== id);
+                loadCategories();
+                updateDashboardStats();
+                updateProductCategoryOptions();
+                
+                // Show success message
+                showNotification('ลบหมวดหมู่เรียบร้อยแล้ว', 'success');
+            }
+        }
+
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('categoryId').value;
+            const categoryData = {
+                name: document.getElementById('categoryName').value,
+                description: document.getElementById('categoryDescription').value,
+                icon: document.getElementById('categoryIcon').value
+            };
+            
+            if (id) {
+                // Update existing category
+                const index = database.categories.findIndex(c => c.id === parseInt(id));
+                database.categories[index] = { ...database.categories[index], ...categoryData };
+            } else {
+                // Add new category
+                categoryData.id = nextId.categories++;
+                database.categories.push(categoryData);
+            }
+            
+            loadCategories();
+            updateDashboardStats();
+            updateProductCategoryOptions();
+            closeCategoryModal();
+        });
+
+        // Search Filters
+        function setupSearchFilters() {
+            document.getElementById('productSearch').addEventListener('input', function(e) {
+                filterProducts(e.target.value);
+            });
+            
+            document.getElementById('userSearch').addEventListener('input', function(e) {
+                filterUsers(e.target.value);
+            });
+        }
+
+        function filterProducts(searchTerm) {
+            const rows = document.querySelectorAll('#productsTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        function filterUsers(searchTerm) {
+            const rows = document.querySelectorAll('#usersTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                closeProductModal();
+                closeUserModal();
+                closeCategoryModal();
+            }
+        });
+
+        // Responsive sidebar
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                document.getElementById('sidebar').classList.remove('-translate-x-full');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'975a82c9d33d9cf0',t:'MTc1NjI4NjYxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
